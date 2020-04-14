@@ -92,7 +92,7 @@ let GAME = {
         this.initCurrentPlayer();
     },
     registerPlayer({color, isComputer = false, name}) {
-        GAME.players.set(color, {color, isComputer, name});
+        GAME.players.set(color, {color, isComputer, name, pawns: {home: 4, ended: 0, playing: 0}});
         GAME.playersOrder.push(color);
     },
     registerComputerPlayer(color) {
@@ -161,7 +161,7 @@ let GAME = {
 
         while (!GAME.winner) {
             this.enableDice();
-            this.movePawn();
+            this.movePawn(); // await user interaction
 
             GAME.winner = player;
         }
