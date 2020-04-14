@@ -1,0 +1,203 @@
+:root {
+    --color-red: #ff0000;
+    --color-green: #008000;
+    --color-blue: #0000ff;
+    --color-yellow: #ffff00;
+    --color-track: #ffffe0;
+
+    --panel-width: 200px;
+    --dice-size: 70px;
+
+    --field-count: 11;
+    --field-size: 70px;
+    --field-distance: 4px;
+    --board-size: calc(var(--field-count) * var(--field-size) + (var(--field-count) - 1) * var(--field-distance));
+}
+
+@-webkit-keyframes pulsation {
+    0% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+    50% {
+        -webkit-transform: scale(0.95);
+        transform: scale(0.95);
+    }
+    100% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background: #f0f0f0;
+}
+
+.panel {
+    display: grid;
+    padding: 1em;
+    grid-gap: 1em;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 40px var(--dice-size) 1fr 50px;
+    grid-template-areas:
+        "player player"
+        "dice dice "
+        "footer score "
+        "...... ......";
+    width: var(--panel-width);
+    height: var(--board-size);
+    justify-content: center;
+    background: grey;
+    margin-right: 2em;
+    border: 3px solid black;
+    box-sizing: border-box;
+}
+
+.panel > .player {
+    grid-area: player;
+    font-size: 140%;
+    line-height: 1.5;
+    align-self: start;
+}
+
+.panel > .player:before {
+    font-size: 150%;
+    grid-area: player;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+}
+
+.panel > .player.red {
+    padding-left: 0.33em;
+    border-left: 15px solid var(--color-red);
+}
+
+.panel > .player.green {
+    padding-left: 0.33em;
+    border-left: 15px solid var(--color-green);
+}
+
+.panel > .player.blue {
+    padding-left: 0.33em;
+    border-left: 15px solid var(--color-blue);
+}
+
+.panel > .player.yellow {
+    padding-left: 0.33em;
+    border-left: 15px solid var(--color-yellow);
+}
+
+.panel > .dice {
+    grid-area: dice;
+    justify-self: center;
+    width: var(--dice-size);
+    height: var(--dice-size);
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-color: transparent;
+    background-size: contain;
+    cursor: pointer;
+    pointer-events: none;
+}
+
+.pulsate {
+    -webkit-animation: pulsation 1.5s ease-in-out infinite both;
+    animation: pulsation 1.5s ease-in-out infinite both;
+}
+
+.d1 {
+    background-image: url("image/dice/1.svg");
+}
+
+.d2 {
+    background-image: url("image/dice/2.svg");
+}
+
+.d3 {
+    background-image: url("image/dice/3.svg");
+}
+
+.d4 {
+    background-image: url("image/dice/4.svg");
+}
+
+.d5 {
+    background-image: url("image/dice/5.svg");
+}
+
+.d6 {
+    background-image: url("image/dice/6.svg");
+}
+
+.board {
+    display: grid;
+    width: var(--board-size);
+    height: var(--board-size);
+    grid-template-columns: repeat(11, var(--field-size));
+    grid-template-rows: repeat(11, var(--field-size));
+    grid-gap: var(--field-distance);
+}
+
+.board > div {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.board > div:not(.empty) {
+    border: 3px solid black;
+}
+
+.board > div:not(.empty).red {
+    background-color: var(--color-red);
+}
+
+.board > div:not(.empty).green {
+    background-color: var(--color-green);
+}
+
+.board > div:not(.empty).blue {
+    background-color: var(--color-blue);
+}
+
+.board > div:not(.empty).yellow {
+    background-color: var(--color-yellow);
+}
+
+.board > div:not(.empty).track {
+    background-color: var(--color-track);
+}
+
+.board > div[class*="pawns"] {
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-color: transparent;
+    background-size: 40%;
+}
+
+.board > div[class*="pawns-red"] {
+    background-image: url("image/pawn/red.svg");
+}
+
+.board > div[class*="pawns-green"] {
+    background-image: url("image/pawn/green.svg");
+}
+
+.board > div[class*="pawns-blue"] {
+    background-image: url("image/pawn/blue.svg");
+}
+
+.board > div[class*="pawns-yellow"] {
+    background-image: url("image/pawn/yellow.svg");
+}

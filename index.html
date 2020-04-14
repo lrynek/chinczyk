@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Chińczyk</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <link rel="stylesheet" href="main.css">
+    <script src="game.js"></script>
+</head>
+<body>
+<main class="hidden">
+    <aside class="panel">
+        <h1 id="currentPlayer" class="player"></h1>
+        <div id="dice" class="dice d1"></div>
+    </aside>
+    <section class="board">
+        <div id="home-red-4" class="red home"></div>
+        <div id="home-red-3" class="red home"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="field-9" class="track red-9 green-39 blue-29 yellow-19"></div>
+        <div id="field-10" class="track red-10 green-40 blue-30 yellow-20"></div>
+        <div id="field-11" class="green start green-1 red-11 blue-31 yellow-21"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="home-green-1" class="green home"></div>
+        <div id="home-green-4" class="green home"></div>
+        <div id="home-red-1" class="red home"></div>
+        <div id="home-red-2" class="red home"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="field-8" class="track red-8 green-38 blue-28 yellow-18"></div>
+        <div id="end-green-1" class="green end green-41"></div>
+        <div id="field-12" class="track red-12 green-2 blue-32 yellow-22"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="home-green-2" class="green home"></div>
+        <div id="home-green-3" class="green home"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="field-7" class="track red-7 green-37 blue-27 yellow-17"></div>
+        <div id="end-green-2" class="green end green-42"></div>
+        <div id="field-13" class="track red-13 green-3 blue-33 yellow-23"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="field-6" class="track red-6 green-36 blue-26 yellow-16"></div>
+        <div id="end-green-3" class="green end green-43"></div>
+        <div id="field-14" class="track red-14 green-4 blue-34 yellow-24"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="field-1" class="red start red-1 green-31 blue-21 yellow-11"></div>
+        <div id="field-2" class="track red-2 green-32 blue-22 yellow-12"></div>
+        <div id="field-3" class="track red-3 green-33 blue-23 yellow-13"></div>
+        <div id="field-4" class="track red-4 green-34 blue-24 yellow-14"></div>
+        <div id="field-5" class="track red-5 green-35 blue-25 yellow-15"></div>
+        <div id="end-green-4" class="green end green-44"></div>
+        <div id="field-15" class="track red-15 green-5 blue-35 yellow-25"></div>
+        <div id="field-16" class="track red-16 green-6 blue-36 yellow-26"></div>
+        <div id="field-17" class="track red-17 green-7 blue-37 yellow-27"></div>
+        <div id="field-18" class="track red-18 green-8 blue-38 yellow-28"></div>
+        <div id="field-19" class="track red-19 green-9 blue-39 yellow-29"></div>
+        <div id="field-40" class="track red-40 green-30 blue-20 yellow-10"></div>
+        <div id="end-red-1" class="red end red-41"></div>
+        <div id="end-red-2" class="red end red-42"></div>
+        <div id="end-red-3" class="red end red-43"></div>
+        <div id="end-red-4" class="red end red-44"></div>
+        <div class="empty"></div>
+        <div id="end-blue-4" class="blue end blue-44"></div>
+        <div id="end-blue-3" class="blue end blue-43"></div>
+        <div id="end-blue-2" class="blue end blue-42"></div>
+        <div id="end-blue-1" class="blue end blue-41"></div>
+        <div id="field-20" class="track red-20 green-10 blue-40 yellow-30"></div>
+        <div id="field-39" class="track red-39 green-29 blue-19 yellow-9"></div>
+        <div id="field-38" class="track red-38 green-28 blue-18 yellow-8"></div>
+        <div id="field-37" class="track red-37 green-27 blue-17 yellow-7"></div>
+        <div id="field-36" class="track red-36 green-26 blue-16 yellow-6"></div>
+        <div id="field-35" class="track red-35 green-25 blue-15 yellow-5"></div>
+        <div id="end-yellow-4" class="yellow end yellow-44"></div>
+        <div id="field-25" class="track red-25 green-15 blue-5 yellow-35"></div>
+        <div id="field-24" class="track red-24 green-14 blue-4 yellow-34"></div>
+        <div id="field-23" class="track red-23 green-13 blue-3 yellow-33"></div>
+        <div id="field-22" class="track red-22 green-12 blue-2 yellow-32"></div>
+        <div id="field-21" class="blue start blue-1 red-21 green-11 yellow-31"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="field-34" class="track red-34 green-24 blue-14 yellow-4"></div>
+        <div id="end-yellow-3" class="yellow end yellow-43"></div>
+        <div id="field-26" class="track red-26 green-16 blue-6 yellow-36"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="field-33" class="track red-33 green-23 blue-13 yellow-3"></div>
+        <div id="end-yellow-2" class="yellow end yellow-42"></div>
+        <div id="field-27" class="track red-27 green-17 blue-7 yellow-37"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="home-yellow-3" class="yellow home"></div>
+        <div id="home-yellow-2" class="yellow home"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="field-32" class="track red-32 green-22 blue-12 yellow-2"></div>
+        <div id="end-yellow-1" class="yellow end yellow-41"></div>
+        <div id="field-28" class="track red-28 green-18 blue-8 yellow-38"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="home-blue-2" class="blue home"></div>
+        <div id="home-blue-1" class="blue home"></div>
+        <div id="home-yellow-4" class="yellow home"></div>
+        <div id="home-yellow-1" class="yellow home"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="field-31" class="yellow start yellow-1 red-31 green-21 blue-11"></div>
+        <div id="field-30" class="track red-30 green-20 blue-10 yellow-40"></div>
+        <div id="field-29" class="track red-29 green-19 blue-9 yellow-39"></div>
+        <div class="empty"></div>
+        <div class="empty"></div>
+        <div id="home-blue-3" class="blue home"></div>
+        <div id="home-blue-4" class="blue home"></div>
+    </section>
+</main>
+
+<audio id="audioApplause" src="audio/applause.ogg" preload="auto"></audio>
+<audio id="audioBeat" src="audio/beat.ogg" preload="auto"></audio>
+<audio id="audioDice" src="audio/dice.ogg" preload="auto"></audio>
+<audio id="audioMove" src="audio/move.ogg" preload="auto"></audio>
+<audio id="audioStart" src="audio/start.ogg" preload="auto"></audio>
+<audio id="audioWooHoo" src="audio/woohoo.ogg" preload="auto"></audio>
+<audio id="audioYes" src="audio/yes.ogg" preload="auto"></audio>
+
+<script>
+    GAME.init(document);
+</script>
+</body>
+</html>
