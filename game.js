@@ -1,15 +1,11 @@
+const timeout = async ms => new Promise(res => setTimeout(res, ms));
+
 function shuffle(array) {
     let counter = array.length;
 
-    // While there are elements in the array
     while (counter > 0) {
-        // Pick a random index
         let index = Math.floor(Math.random() * counter);
-
-        // Decrease counter by 1
-        counter--;
-
-        // And swap the last element with it
+        --counter;
         let temp = array[counter];
         array[counter] = array[index];
         array[index] = temp;
@@ -30,66 +26,68 @@ let GAME = {
     players: new Map,
     playersOrder: [],
     scope: null,
+    userClicked: false,
     winner: null,
     init(scope) {
         GAME.scope = scope;
-
-        this.initNumberOfPlayers();
-        this.initPlayers();
-        this.initBoard();
-        this.initDice();
-        this.showBoard();
-
+        GAME.initNumberOfPlayers();
+        GAME.initPlayers();
+        GAME.initBoard();
+        GAME.initDice();
+        GAME.initClickableElements();
+        GAME.disableKeys();
+        GAME.showBoard();
         GAME.initialized = true;
-
-        this.play();
+        GAME.play();
     },
     initNumberOfPlayers() {
-        let numberOfPlayers;
-        do {
-            numberOfPlayers = parseInt(prompt('Podaj lczbę graczy (od 1 do 4):') || '0') || 0;
-        } while (numberOfPlayers < 1 || numberOfPlayers > GAME.maxNumberOfPlayers);
+        let numberOfPlayers = 1;
+        // do {
+        //     numberOfPlayers = parseInt(prompt('Podaj lczbę graczy (od 1 do 4):') || '0') || 0;
+        // } while (numberOfPlayers < 1 || numberOfPlayers > GAME.maxNumberOfPlayers);
         GAME.numberOfPlayers = numberOfPlayers;
     },
     initPlayers() {
         let color, name;
-        let translated = new Map(
-            [[1, 'czerwony'], [2, 'zielony'], [3, 'niebieski'], [4, 'żółty']]
-        );
+        // let translated = new Map(
+        //     [[1, 'czerwony'], [2, 'zielony'], [3, 'niebieski'], [4, 'żółty']]
+        // );
+        //
+        // for (let i = 0; i < GAME.numberOfPlayers; i++) {
+        //     do {
+        //         name = prompt(`Imię gracza ${i + 1}:`);
+        //     } while (!name);
+        //
+        //     let keys = Array.from(translated.keys()), colorChoice;
+        //     do {
+        //         if (keys.length === 1) {
+        //             colorChoice = keys[0];
+        //             continue;
+        //         }
+        //
+        //         let choices = [];
+        //
+        //         translated.forEach(function (translatedColor, choice) {
+        //             choices.push(`${choice}: ${translatedColor}`);
+        //         });
+        //
+        //         colorChoice = parseInt(
+        //             prompt(
+        //                 `Kolor gracza ${name} (${choices.join('| ')}):`,
+        //                 GAME.playerColors.keys()[i + 1]
+        //             )
+        //         ) || 0;
+        //     } while (keys.indexOf(colorChoice) === -1);
+        //
+        //     translated.delete(colorChoice);
+        //     color = GAME.playerColors.get(colorChoice);
+        //     GAME.registerPlayer({color, name});
+        // }
 
-        for (let i = 0; i < GAME.numberOfPlayers; i++) {
-            do {
-                name = prompt(`Imię gracza ${i + 1}:`);
-            } while (!name);
-
-            let keys = Array.from(translated.keys()), colorChoice;
-            do {
-                if (keys.length === 1) {
-                    colorChoice = keys[0];
-                    continue;
-                }
-
-                let choices = [];
-
-                translated.forEach(function (translatedColor, choice) {
-                    choices.push(`${choice}: ${translatedColor}`);
-                });
-
-                colorChoice = parseInt(
-                    prompt(
-                        `Kolor gracza ${name} (${choices.join('| ')}):`,
-                        GAME.playerColors.keys()[i + 1]
-                    )
-                ) || 0;
-            } while (keys.indexOf(colorChoice) === -1);
-
-            translated.delete(colorChoice);
-            color = GAME.playerColors.get(colorChoice);
-            this.registerPlayer({color, name});
-        }
-
-        this.registerComputerPlayer(color);
-        this.initCurrentPlayer();
+        color = 'red';
+        GAME.registerPlayer({color, name: 'Łukasz'});
+        GAME.registerComputerPlayer(color);
+        GAME.initCurrentPlayer();
     },
     registerPlayer({color, isComputer = false, name}) {
         GAME.players.set(color, {color, isComputer, name, pawns: {home: 4, ended: 0, playing: 0}});
@@ -98,14 +96,16 @@ let GAME = {
     registerComputerPlayer(color) {
         if (GAME.numberOfPlayers === 1) {
             const opposite = new Map([['red', 'blue'], ['blue', 'red'], ['green', 'yellow'], ['yellow', 'green']]);
-            this.registerPlayer({color: opposite.get(color), isComputer: true, name: 'Komputer'});
+            GAME.registerPlayer({color: opposite.get(color), isComputer: true, name: 'Komputer'});
             ++GAME.numberOfPlayers;
         }
     },
     initCurrentPlayer() {
         shuffle(GAME.playersOrder);
-        GAME.currentPlayer = GAME.players.get(GAME.playersOrder[0]);
-        this.updateCurrentPlayerDisplay();
+        let player = GAME.players.get(GAME.playersOrder[0]);
+        player.isComputer ? player = GAME.players.get(GAME.playersOrder[1]) : player;
+        GAME.currentPlayer = player;
+        GAME.updateCurrentPlayerDisplay();
     },
     initBoard() {
         for (let i = 0; i < GAME.maxNumberOfPlayers; i++) {
@@ -136,56 +136,112 @@ let GAME = {
             MAX: 6,
             element: GAME.scope.getElementById('dice'),
             result: 1,
+            disable() {
+                GAME.dice.element.style.pointerEvents = 'none';
+                GAME.dice.element.classList.remove('pulsate');
+            },
+            enable() {
+                GAME.dice.element.style.pointerEvents = 'all';
+                GAME.dice.element.classList.add('pulsate');
+            },
             max() {
                 return GAME.dice.MAX === GAME.dice.result
             },
-            roll() {
-                GAME.playSound('dice');
+            async roll() {
                 const result = Math.max(Math.round(Math.random() * GAME.dice.MAX), GAME.dice.MIN);
                 GAME.dice.result = result;
                 GAME.dice.element.className = 'dice';
                 GAME.dice.element.classList.add(`d${result}`);
-                // GAME.disableDice();
+                GAME.dice.disable();
+                return GAME.playSound('dice');
             }
         };
         GAME.dice.element.addEventListener('click', GAME.dice.roll);
     },
+    initClickableElements() {
+        GAME.scope.addEventListener('click', (event) => {
+            GAME.userClicked = event.target;
+        });
+    },
+    disableKeys() {
+        window.addEventListener('keydown', function (event) {
+            const R = 82;
+            const disabledKeys = [R];
+
+            if (event.ctrlKey || event.metaKey) { // CTRL || CMD
+                if (disabledKeys.indexOf(event.keyCode) > -1) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }
+            }
+        })
+    },
     showBoard() {
         GAME.scope.getElementsByTagName('main')[0].classList.remove('hidden');
     },
-    play() {
-        if (!GAME.initialized) return;
+    play: async () => {
+        if (!GAME.initialized) return new Promise(() => null);
 
         let player = GAME.currentPlayer;
         alert(`Gra rozpoczęta - zaczyna ${player.name}`);
 
-        while (!GAME.winner) {
-            this.enableDice();
-            this.movePawn(); // await user interaction
+        do {
+            await GAME.move();
+            GAME.checkIfPlayerWins();
+            GAME.nextPlayer();
+        } while (!GAME.winner);
 
-            GAME.winner = player;
+        GAME.playSound('applause').then(() => alert(`BRAWO! Wygrał(a) ${GAME.winner.name}`));
+
+        return new Promise(() => null);
+    },
+    move: async function () {
+        if (GAME.currentPlayer.isComputer) {
+            await timeout(800);
+            await GAME.dice.roll();
+        } else {
+            GAME.dice.enable();
+            await GAME.waitForUserClick(GAME.dice.element);
         }
 
-        //
-        // this.playSound('applause');
-        // setTimeout(function () {
-        //     alert(`BRAWO! Wygrał(a) ${GAME.winner.name}`);
-        // }, 5000);
+        await GAME.movePawn();
+
+        return timeout(2000);
     },
-    enableDice() {
-        GAME.dice.element.style.pointerEvents = 'all';
-        GAME.dice.element.classList.add('pulsate');
+    async waitForUserClick(target) {
+        while (false === GAME.userClicked || false === GAME.userClicked.isSameNode(target)) await timeout(50);
+        GAME.userClicked = false;
     },
-    disableDice() {
-        GAME.dice.element.style.pointerEvents = 'none';
-        GAME.dice.element.classList.remove('pulsate');
+    async movePawn() {
+        setTimeout(
+            () => {
+                return GAME.playSound('move');
+            },
+            1000
+        );
     },
-    playSound(sound) {
+    async playSound(sound) {
         if (!GAME.initialized) return;
 
         const idSuffix = sound.charAt(0).toUpperCase() + sound.slice(1);
         const audio = GAME.scope.getElementById(`audio${idSuffix}`);
-        audio && audio.play();
+
+        return audio.play();
+    },
+    checkIfPlayerWins() {
+        if (GAME.currentPlayer.pawns.ended === GAME.pawnsPerPlayer) {
+            GAME.winner = GAME.currentPlayer;
+        }
+    },
+    nextPlayer() {
+        if (GAME.winner) return;
+
+        let position = GAME.playersOrder.indexOf(GAME.currentPlayer.color);
+        position + 1 < GAME.numberOfPlayers ? ++position : position = 0;
+        const newColor = GAME.playersOrder[position];
+        GAME.currentPlayer = GAME.players.get(newColor);
+        GAME.updateCurrentPlayerDisplay();
     },
     updateCurrentPlayerDisplay() {
         const player = GAME.currentPlayer;
@@ -193,14 +249,5 @@ let GAME = {
         element.textContent = player.name;
         element.className = 'player';
         element.classList.add(player.color);
-    },
-    movePawn() {
-        const callback = function () {
-            if (GAME.dice.max()) {
-                GAME.playSound('start');
-                GAME.playSound('yes');
-            }
-        };
-        GAME.dice.element.addEventListener('click', callback);
     }
 };
