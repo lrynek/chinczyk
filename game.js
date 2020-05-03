@@ -108,7 +108,7 @@ let GAME = {
         GAME.updateCurrentPlayerDisplay();
     },
     initBoard() {
-        for (let i = 0; i < GAME.maxNumberOfPlayers; i++) {
+        for (let i = 0; i < GAME.numberOfPlayers; i++) {
             for (let j = 0; j < GAME.pawnsPerPlayer; j++) {
                 const n = j + 1;
                 const color = Array.from(GAME.players.keys())[i];
@@ -187,7 +187,9 @@ let GAME = {
         alert(`Gra rozpoczęta - zaczyna ${player.name}`);
 
         do {
-            await GAME.move();
+            do {
+                await GAME.move();
+            } while (GAME.dice.max())
             GAME.checkIfPlayerWins();
             GAME.nextPlayer();
         } while (!GAME.winner);
@@ -214,12 +216,48 @@ let GAME = {
         GAME.userClicked = false;
     },
     async movePawn() {
-        setTimeout(
-            () => {
-                return GAME.playSound('move');
-            },
-            1000
-        );
+        const player = GAME.currentPlayer;
+
+        switch (player.pawns.playing) {
+            case 0: {
+                return GAME.dice.max() ? await GAME.moveFirstPawn(player) : await GAME.playSound('no');
+            }
+            case 1: {
+                GAME.dice.max() ? await GAME.choosePawn(player) : await GAME.moveTheOnlyPlayingPawn(player);
+            }
+        }
+    },
+    async moveFirstPawn(player) {
+        const color = player.color;
+        const currentPawnClass = `pawns-${color}-1`;
+        const homeField = GAME.scope.getElementById(`home-${color}-1`);
+        return this.moveHomePawn(player, homeField, currentPawnClass);
+    },
+    moveHomePawn: async function (player, homeField, currentPawnClass) {
+        const color = player.color;
+        const startField = GAME.scope.querySelector(`.${color}.start`);
+        homeField.classList.remove(currentPawnClass);
+        startField.classList.add(currentPawnClass);
+        --player.pawns.home;
+        ++player.pawns.playing;
+        await GAME.playSound('start');
+        return GAME.playSound('yes');
+    },
+    async moveTheOnlyPlayingPawn(player) {
+        const color = player.color;
+        const currentPawnClass = `pawns-${color}-1`;
+        const currentField = GAME.scope.querySelector(`[data-${color}].${currentPawnClass}`);
+        const currentPosition = parseInt(currentField.dataset[color]);
+        const newPosition = currentPosition + GAME.dice.result;
+        const newField = GAME.scope.querySelector(`[data-${color}="${newPosition}"]`);
+        currentField.classList.remove(currentPawnClass);
+        newField.classList.add(currentPawnClass);
+        return GAME.playSound('move');
+    },
+    async choosePawn(player) {
+        await GAME.waitForUserClick();
+
+
     },
     async playSound(sound) {
         if (!GAME.initialized) return;
